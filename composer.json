@@ -4,7 +4,7 @@
     "type": "library",
     "require": {
         "php": "^8.3",
-        "barryvdh/laravel-dompdf": "^2.0|^3.0",
+        "barryvdh/laravel-dompdf": "^2.0|^3.0|^3.1",
         "openspout/openspout": "^4.22"
     },
     "license": "proprietary",
