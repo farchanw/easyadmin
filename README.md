@@ -1,104 +1,179 @@
-## iDev Easy Admin
+# iDev Easy Admin
 
-Admin packages with easy crud, import and export datas 
+Admin package with easy CRUD, data import, and data export features.
+
+---
 
 ## Installation
-1. Add package to composer.json <br>
-    <pre>
-    composer require idevsmg/easyadmin:dev-main
-    </pre>
 
-2. Add autoload to composer.json
-   <pre>
-    "autoload": {
-        "psr-4": {
-            ....
-            "Idev\\EasyAdmin\\": "vendor/idevsmg/easyadmin/src/"
+### 1. Add Package to `composer.json`
+
+Before running the require command, configure your main project to find this custom repository by adding a `repositories` block, then run the require command:
+
+```json
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/farchanw/easyadmin"
         }
-    },
-   </pre>
- 
-3. Add provider to config/app.php providers <br>
-    <pre>
-    'providers' => ServiceProvider::defaultProviders()->merge([
-        .....
-        Idev\EasyAdmin\EasyAdminServiceProvider::class,
-    ])->toArray(),
-   </pre>
-   
-   For Laravel 11 you can add code below to bootstrap/providers.php:<br>
-    <pre>
-    return [
-        ....
-        Idev\EasyAdmin\EasyAdminServiceProvider::class,
-    ];
-   </pre>
+    ]
+}
 
-4. Run installation<br>
-    <pre>
-    composer dump-autoload
+```
 
-    php artisan vendor:publish --tag=install-idev --force
-   </pre>
-then you can doing migration and seeder
+```bash
+composer require farchanw/easyadmin
 
-## CRUD Generator 
-You can easily create your crud controller, let's enable command via app/Console/Kernel.php
-<pre>
-    protected $commands = [
-        ....
-        \Idev\EasyAdmin\app\Console\Commands\ControllerMaker::class,
-    ];
-</pre>
-In laravel 11 you should add command in bootstrap/app.php
-<pre>
-    ->withCommands([
-        Idev\EasyAdmin\app\Console\Commands\ControllerMaker::class,
-    ])
-</pre>
-make sure the table migration has been created
-then you just type: 
-<pre>
-    php artisan idev:controller-maker --slug=your-route --table=your_table
-</pre>
-for example you have database master_products and you want to access this page with route /master-product, so should do artisan like this:
-<pre>
-    php artisan idev:controller-maker --slug=master-product --table=master_products
-</pre>
+```
 
+### 2. Add Autoload
+
+Update the `autoload` section in your `composer.json`:
+
+```json
+"autoload": {
+    "psr-4": {
+        "App\\": "app/",
+        "Idev\\EasyAdmin\\": "vendor/idevsmg/easyadmin/src/"
+    }
+}
+
+```
+
+### 3. Register Service Provider
+
+Depending on your Laravel version, register the service provider in one of the following locations:
+
+* **Laravel 10 and below (`config/app.php`)**:
+```php
+'providers' => ServiceProvider::defaultProviders()->merge([
+    // ...
+    Idev\EasyAdmin\EasyAdminServiceProvider::class,
+])->toArray(),
+
+```
+
+
+* **Laravel 11 (`bootstrap/providers.php`)**:
+```php
+return [
+    // ...
+    Idev\EasyAdmin\EasyAdminServiceProvider::class,
+];
+
+```
+
+
+
+### 4. Run Installation Commands
+
+Run the autoload dump and publish the package assets:
+
+```bash
+composer dump-autoload
+php artisan vendor:publish --tag=install-idev --force
+
+```
+
+After running these commands, proceed with your database migrations and seeders.
+
+---
+
+## CRUD Generator
+
+You can easily generate your CRUD controllers.
+
+### Register the Command
+
+* **Laravel 10 and below (`app/Console/Kernel.php`)**:
+```php
+protected $commands = [
+    // ...
+    \Idev\EasyAdmin\app\Console\Commands\ControllerMaker::class,
+];
+
+```
+
+
+* **Laravel 11 (`bootstrap/app.php`)**:
+```php
+->withCommands([
+    Idev\EasyAdmin\app\Console\Commands\ControllerMaker::class,
+])
+
+```
+
+
+
+### Run the Generator
+
+Make sure your table migration has been created and migrated. Then run the artisan command:
+
+```bash
+php artisan idev:controller-maker --slug=your-route --table=your_table
+
+```
+
+**Example:**
+If you have a `master_products` table and want to access the page at `/master-product`:
+
+```bash
+php artisan idev:controller-maker --slug=master-product --table=master_products
+
+```
+
+---
 
 ## Middleware CRUD (Optional)
-We also prepare middleware for access control in your crud by adding snippet code below into kernel.php  <br>
-    <pre>
-    protected $middlewareAliases = [
-        .....
-        'middlewareByAccess' => \Idev\EasyAdmin\app\Http\Middleware\MiddlewareByAccess::class
-    ];
-   </pre>
-   
-And don't forget to implement this middleware into your route
-<pre>
-   Route::group(['middleware' => ['web', 'auth', 'middlewareByAccess']], function () {
-       ......
-   });
-</pre>
 
-## Sample CRUD  (Optional)
-if you want to view our sample crud controller, you can publish sample-crud. <br>
-php artisan vendor:publish --tag=sample-crud --force <br>
+An optional middleware is available for access control in your CRUD features.
 
-and set your like this
-<pre>
-   Route::group(['middleware' => ['web', 'auth']], function () {
-       Route::resource('sample-data', SampleDataController::class);
-       Route::get('sample-data-api', [SampleDataController::class, 'indexApi'])->name('sample-data.listapi');
-       Route::get('sample-data-export-pdf-default', [SampleDataController::class, 'exportPdf'])->name('sample-data.export-pdf-default');
-       Route::get('sample-data-export-excel-default', [SampleDataController::class, 'exportExcel'])->name('sample-data.export-excel-default');
-       Route::post('sample-data-import-excel-default', [SampleDataController::class, 'importExcel'])->name('sample-data.import-excel-default');
-   });
-</pre>
+### 1. Register the Middleware
 
+Add the middleware alias to your kernel/application setup:
 
+```php
+protected $middlewareAliases = [
+    // ...
+    'middlewareByAccess' => \Idev\EasyAdmin\app\Http\Middleware\MiddlewareByAccess::class
+];
 
+```
 
+### 2. Apply to Routes
 
+Implement the middleware in your route definition:
+
+```php
+Route::group(['middleware' => ['web', 'auth', 'middlewareByAccess']], function () {
+    // ...
+});
+
+```
+
+---
+
+## Sample CRUD (Optional)
+
+If you want to view a sample CRUD controller implementation, publish the sample files:
+
+```bash
+php artisan vendor:publish --tag=sample-crud --force
+
+```
+
+Then configure your routes like this:
+
+```php
+Route::group(['middleware' => ['web', 'auth']], function () {
+    Route::resource('sample-data', SampleDataController::class);
+    Route::get('sample-data-api', [SampleDataController::class, 'indexApi'])->name('sample-data.listapi');
+    Route::get('sample-data-export-pdf-default', [SampleDataController::class, 'exportPdf'])->name('sample-data.export-pdf-default');
+    Route::get('sample-data-export-excel-default', [SampleDataController::class, 'exportExcel'])->name('sample-data.export-excel-default');
+    Route::post('sample-data-import-excel-default', [SampleDataController::class, 'importExcel'])->name('sample-data.import-excel-default');
+});
+
+```
+
+---
