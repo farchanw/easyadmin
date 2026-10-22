@@ -23,7 +23,7 @@ Before running the require command, configure your main project to find this cus
 ```
 
 ```bash
-composer require farchanw/easyadmin:dev-main
+composer require idevsmg/easyadmin:dev-main
 
 ```
 
@@ -133,12 +133,22 @@ An optional middleware is available for access control in your CRUD features.
 
 Add the middleware alias to your kernel/application setup:
 
+* **Laravel 10 and below (`app/Console/Kernel.php`)**:
 ```php
 protected $middlewareAliases = [
     // ...
     'middlewareByAccess' => \Idev\EasyAdmin\app\Http\Middleware\MiddlewareByAccess::class
 ];
 
+```
+
+* **Laravel 11 (`bootstrap/app.php`)**:
+```php
+->withMiddleware(function (Middleware $middleware) {
+    $middleware->alias([
+        'middlewareByAccess' => \Idev\EasyAdmin\app\Http\Middleware\MiddlewareByAccess::class,
+    ]);
+})
 ```
 
 ### 2. Apply to Routes
