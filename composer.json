@@ -1,5 +1,5 @@
 {
-    "name": "farchanw/easyadmin",
+    "name": "idevsmg/easyadmin",
     "description": "Admin packages with easy crud, import and export table",
     "type": "library",
     "require": {
