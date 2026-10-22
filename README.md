@@ -23,7 +23,7 @@ Before running the require command, configure your main project to find this cus
 ```
 
 ```bash
-composer require farchanw/easyadmin
+composer require farchanw/easyadmin:dev-main
 
 ```
 
